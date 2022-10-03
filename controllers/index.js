@@ -1,3 +1,4 @@
+const express = require('express');
 const User = require("../models/user");
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -7,23 +8,23 @@ const { response } = require("express");
 
 const register = async(req, res) => {
     const { fullname, email, password, confirmpassword } = req.body;
-    let errors = [];
+    let error = [];
   
     if (!fullname || !email || !password || !confirmpassword) {
-      errors.push({ msg: 'Please enter all fields' });
+      error.push({ msg: 'Please enter all fields' });
     }
   
     if (password !== confirmpassword) {
-      errors.push({ msg: 'Passwords do not match' });
+      error.push({ msg: 'Passwords do not match' });
     }
   
     if (password.length < 6) {
-      errors.push({ msg: 'Password must be at least 6 characters' });
+      error.push({ msg: 'Password must be at least 6 characters' });
     }
   
-    if (errors.length > 0) {
+    if (error.length > 0) {
       res.render('register', {
-        errors,
+        error,
         fullname,
         email,
         password,
@@ -32,7 +33,7 @@ const register = async(req, res) => {
     } else {
       User.findOne({ email: email }).then(user => {
         if (user) {
-          errors.push({ msg: 'Email already exists' });
+          error.push({ msg: 'Email already exists' });
           res.render('register', {
             errors,
             fullname,
